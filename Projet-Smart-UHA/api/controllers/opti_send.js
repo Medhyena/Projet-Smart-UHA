@@ -1,10 +1,10 @@
 'use strict';
 
-var app = require('express')();
-
 module.exports = {
     opti_send: opti_send
 }
+
+var jsonStringSave = require('./jsonStringSave');
 
 /*
   Functions in a127 controllers used for operations should take two parameters:
@@ -13,6 +13,6 @@ module.exports = {
   Param 2: a handle to the response object
  */
 function opti_send(req, res) {
-    app.locals.JSonStringAllInfos = req;
+    jsonStringSave.set(JSON.stringify(req.body));
     res.json("Succesfully sent");
 }
