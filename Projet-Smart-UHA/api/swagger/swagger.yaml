@@ -67,16 +67,18 @@ paths:
           schema:
             $ref: "#/definitions/ErrorResponse"
   /opti/recv:
-    x-swwager-router-controller: opti_recv
+    x-swagger-router-controller: opti_send
     get:
       description: recv data from the server
       operationId: opti_recv
+      produces:
+      - "application/json"
       parameters:
         - in: formData
           name: opti_infos
           description: "informations as json object received from the server"
-          required: false
           type: string
+          required: true
       responses:
         "200":
           description: Success

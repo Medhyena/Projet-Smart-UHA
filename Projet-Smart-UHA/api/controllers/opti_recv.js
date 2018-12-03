@@ -11,6 +11,5 @@ module.exports = {
   Param 2: a handle to the response object
  */
 function opti_recv(req, res) {
-
-    res.setBody(req);
+    res.json("pouet");
 }

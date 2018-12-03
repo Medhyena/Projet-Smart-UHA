@@ -1,5 +1,7 @@
 'use strict';
 
+var app = require('express')();
+
 module.exports = {
     opti_send: opti_send
 }
@@ -11,6 +13,6 @@ module.exports = {
   Param 2: a handle to the response object
  */
 function opti_send(req, res) {
-    
+    app.locals.JSonStringAllInfos = req;
     res.json("Succesfully sent");
 }
