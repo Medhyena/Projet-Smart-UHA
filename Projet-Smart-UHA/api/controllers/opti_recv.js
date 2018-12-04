@@ -13,6 +13,5 @@ var jsonStringSave = require('./jsonStringSave');
   Param 2: a handle to the response object
  */
 function opti_recv(req, res) {
-    console.log(jsonStringSave.get());
     res.json(jsonStringSave.get());
 }
