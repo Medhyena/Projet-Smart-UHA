@@ -3,6 +3,7 @@
 
 var SwaggerExpress = require('swagger-express-mw');
 var app = require('express')();
+var jsonStringSave = require('./api/controllers/jsonStringSave');
 module.exports = app; // for testing
 
 var config = {
@@ -65,47 +66,46 @@ connection();
 
 // Fonction pour récupérer les trajets
 const getTrajets = () => {
-  if (connected) {
-    const data = {
-      start_date: new Date(),
-      end_date: "2051-01-30T23:00:00.000Z",
-      backend_url: keys.backend.server_url
-    };
-
-    const postData = JSON.stringify(data);
-
-    const options = {
-      url: `http://localhost:8095/events/${
-        keys.customer.customer.cust_uuid
-      }/calendar`,
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: keys.apikey
-      },
-      body: postData
-    };
-
-    request(options, (err, response, body) => {
-      if (err) {
-        console.log(err);
-        trajets = null;
-      } else {
-        if (response.statusCode === 200) {
-          trajets = response.body;
-        } else {
-          console.log(response.statusCode);
+    if (connected) {
+      const data = {
+        start_date: new Date(),
+        end_date: "2051-01-30T23:00:00.000Z",
+        backend_url: keys.backend.server_url
+      };
+  
+      const postData = JSON.stringify(data);
+  
+      const options = {
+        url: `http://localhost:8095/events/${
+          keys.customer.customer.cust_uuid
+        }/calendar`,
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: keys.apikey
+        },
+        body: postData
+      };
+  
+      request(options, (err, response, body) => {
+        if (err) {
+          console.log(err);
           trajets = null;
+        } else {
+          if (response.statusCode === 200) {
+            trajets = response.body;
+          } else {
+            console.log(response.statusCode);
+            trajets = null;
+          }
         }
-      }
-    });
-  }
+      });
+    }
+    console.log(trajets);
+    jsonStringSave.set(trajets);
 };
 // Exécution de la fonction toute les minutes
 cron.schedule("* * * * *", getTrajets);
-console.log(trajets);
-
-
 
 SwaggerExpress.create(config, function(err, swaggerExpress) {
   if (err) { throw err; }
