@@ -1,6 +1,7 @@
 'use strict';
 
 var app = require('express')();
+var WebSocketServer = require('websocket').server;
 var jsonStringSave = require('./jsonStringSave');
 module.exports = app; // for testing
 
@@ -104,6 +105,29 @@ const getTrajets = () => {
 };
 // Exécution de la fonction toute les minutes
 cron.schedule("* * * * *", getTrajets);
+
+new WebSocketServer();
+/*
+à voir comment ça marche
+
+server = http.createServer(function(request, response) {
+  response.writeHead(404);
+  response.end();
+});
+
+wsServer = new WebSocketServer({
+  httpServer: server,
+  autoAcceptConnections: false,
+  maxReceivedFrameSize: 64*1024*1024,   // 64MiB
+  maxReceivedMessageSize: 64*1024*1024, // 64MiB
+  fragmentOutgoingMessages: false,
+  keepalive: false,
+  disableNagleAlgorithm: false
+});
+
+server.listen(10010);
+
+*/
 
 var optiAlgoWebSocket1 = new WebSocket("ws://127.0.0.1:8080");
 
