@@ -1,7 +1,7 @@
 'use strict';
 
 var app = require('express')();
-var jsonStringSave = require('./api/controllers/jsonStringSave');
+var jsonStringSave = require('./jsonStringSave');
 module.exports = app; // for testing
 
 var config = {
@@ -119,4 +119,4 @@ function sendTrajets() {
   optiAlgoWebSocket1.send(jsonStringSave.get());
 }
 
-cron.schedule("* * * * *", )
+cron.schedule("* * * * *", sendTrajets);

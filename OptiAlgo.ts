@@ -6,7 +6,6 @@ class Optimisation {
         for (i = 0; vehicule_id[i] != true; i++);
         console.log(points_et_colis);
         vehicule_et_points_et_colis[i] = points_et_colis.slice();
-        console.log(vehicule_et_points_et_colis);
         vehicule_id[i] = false;
         return vehicule_et_points_et_colis;
     }
@@ -20,6 +19,7 @@ class Optimisation {
         let vehicule_et_points_et_colis:number[][][][];
         vehicule_et_points_et_colis = this.optimisation_naive(points_et_colis, vehicule_id);
         console.log(vehicule_et_points_et_colis);
+        console.log(vehicule_et_points_et_colis[1]);
         return 0;
     }
 }
