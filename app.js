@@ -106,19 +106,21 @@ const getTrajets = () => {
 // Exécution de la fonction toute les minutes
 cron.schedule("* * * * *", getTrajets);
 
-const wss = new WebSocket.Server({
-  port: 8080,
-  perMessageDeflate: {
-    // Other options settable:
-    clientNoContextTakeover: true, // Defaults to negotiated value.
-    serverNoContextTakeover: true, // Defaults to negotiated value.
-    serverMaxWindowBits: 10, // Defaults to negotiated value.
-    // Below options specified as default values.
-    concurrencyLimit: 10, // Limits zlib concurrency for perf.
-    threshold: 1024 // Size (in bytes) below which messages
-  }
+const wss = new WebSocket.Server({ 
+  port: 8080 
 });
 
+wss.on('connection', function connection(ws) {
+  // un algorithme d'optimisation se connecte, ce code est exécuté
+
+  // cette fonction effectue une action quand un algorithme d'optimisation envoie un message vers ce serveur
+  ws.on('message', function incoming(message) {
+    console.log('received: %s', message);
+  });
+
+  // cette fonction envoie un message vers l'algorithme qui s'est connecté
+  ws.send('something');
+});
 
 function sendTrajets() {
   //optiAlgoWebSocket1.send(jsonStringSave.get());
