@@ -12,8 +12,9 @@ var Optimisation = /** @class */ (function () {
         return vehicule_et_points_et_colis;
     };
     Optimisation.main = function () {
-        var points_et_colis = [[1, 2], [3], [6, 8], [4, 5, 7]]; // chaque point de trajet a des colis à déposer ou à retirer, ici, les colis sont définis par des chiffres, 
-        // les points de trajets sont considérés comme sur une ligne de tram, donc dans un ordre plus ou moins logique par rapport aux distances (ici arbitraire)
+        var points_et_colis = [ [ [1, 1], [2, 1] ], [ [3, 2] ] ]; // chaque point de trajet a des colis à retirer avec leur points de trajets à déposer,
+        // ici, les colis sont définis par des chiffres comme des identifiants, 
+        // les points de trajets sont considérés comme sur une ligne de tram, donc dans un ordre plus ou moins logique par rapport aux distances (ici du plus bas au plus haut)
         var vehicule_id = [false, true, true, false]; // véhicule disponible = true, non disponible = false
         var vehicule_et_points_et_colis;
         vehicule_et_points_et_colis = this.optimisation_naive(points_et_colis, vehicule_id);

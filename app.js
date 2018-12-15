@@ -1,7 +1,5 @@
 'use strict';
 
-
-var SwaggerExpress = require('swagger-express-mw');
 var app = require('express')();
 var jsonStringSave = require('./api/controllers/jsonStringSave');
 module.exports = app; // for testing
@@ -107,15 +105,18 @@ const getTrajets = () => {
 // Exécution de la fonction toute les minutes
 cron.schedule("* * * * *", getTrajets);
 
-SwaggerExpress.create(config, function(err, swaggerExpress) {
-  if (err) { throw err; }
+var optiAlgoWebSocket1 = new WebSocket("ws://127.0.0.1:8080");
 
-  // install middleware
-  swaggerExpress.register(app);
+optiAlgoWebSocket1.onopen = function () {
+  console.log("Connexion établie vers un algorithme d'optimisation!");
+}
 
-  var port = process.env.PORT || 10010;
-  app.listen(port);
+optiAlgoWebSocket1.onmessage = function (event) {
+  jsonStringSave.set(JSON.parse(event.data));
+}
 
-  console.log("Server is LIVE");
+function sendTrajets() {
+  optiAlgoWebSocket1.send(jsonStringSave.get());
+}
 
-});
+cron.schedule("* * * * *", )
