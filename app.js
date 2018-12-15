@@ -1,7 +1,7 @@
 'use strict';
 
 var app = require('express')();
-var WebSocketServer = require('websocket').server;
+var WebSocket = require('ws');
 var jsonStringSave = require('./jsonStringSave');
 module.exports = app; // for testing
 
@@ -106,41 +106,22 @@ const getTrajets = () => {
 // Exécution de la fonction toute les minutes
 cron.schedule("* * * * *", getTrajets);
 
-new WebSocketServer();
-/*
-à voir comment ça marche
-
-server = http.createServer(function(request, response) {
-  response.writeHead(404);
-  response.end();
+const wss = new WebSocket.Server({
+  port: 8080,
+  perMessageDeflate: {
+    // Other options settable:
+    clientNoContextTakeover: true, // Defaults to negotiated value.
+    serverNoContextTakeover: true, // Defaults to negotiated value.
+    serverMaxWindowBits: 10, // Defaults to negotiated value.
+    // Below options specified as default values.
+    concurrencyLimit: 10, // Limits zlib concurrency for perf.
+    threshold: 1024 // Size (in bytes) below which messages
+  }
 });
 
-wsServer = new WebSocketServer({
-  httpServer: server,
-  autoAcceptConnections: false,
-  maxReceivedFrameSize: 64*1024*1024,   // 64MiB
-  maxReceivedMessageSize: 64*1024*1024, // 64MiB
-  fragmentOutgoingMessages: false,
-  keepalive: false,
-  disableNagleAlgorithm: false
-});
-
-server.listen(10010);
-
-*/
-
-var optiAlgoWebSocket1 = new WebSocket("ws://127.0.0.1:8080");
-
-optiAlgoWebSocket1.onopen = function () {
-  console.log("Connexion établie vers un algorithme d'optimisation!");
-}
-
-optiAlgoWebSocket1.onmessage = function (event) {
-  jsonStringSave.set(JSON.parse(event.data));
-}
 
 function sendTrajets() {
-  optiAlgoWebSocket1.send(jsonStringSave.get());
+  //optiAlgoWebSocket1.send(jsonStringSave.get());
 }
 
 cron.schedule("* * * * *", sendTrajets);
