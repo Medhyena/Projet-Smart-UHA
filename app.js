@@ -1,13 +1,10 @@
 'use strict';
 
+// Dépendances du projet
 var app = require('express')();
 var WebSocket = require('ws');
+var server = require('http').createServer();
 var jsonStringSave = require('./jsonStringSave');
-module.exports = app; // for testing
-
-var config = {
-  appRoot: __dirname // required config
-};
 
 const cron = require("node-cron");
 const request = require("request");
@@ -107,23 +104,28 @@ const getTrajets = () => {
 cron.schedule("* * * * *", getTrajets);
 
 const wss = new WebSocket.Server({ 
-  port: 8080 
+  server: server
 });
+
+var points_et_colis_test = [ [ [1, 1], [2, 1] ], [ [3, 2] ] ];
 
 wss.on('connection', function connection(ws) {
   // un algorithme d'optimisation se connecte, ce code est exécuté
 
   // cette fonction effectue une action quand un algorithme d'optimisation envoie un message vers ce serveur
   ws.on('message', function incoming(message) {
-    console.log('received: %s', message);
+    console.log('received: ' + message);
   });
 
   // cette fonction envoie un message vers l'algorithme qui s'est connecté
-  ws.send('something');
+  cron.schedule("* * * * *", ws.send(JSON.stringify(points_et_colis_test)));
 });
+
+server.on('request', app);
+
+// Le serveur écoute sur le port 10010
+server.listen(10010);
 
 function sendTrajets() {
   //optiAlgoWebSocket1.send(jsonStringSave.get());
 }
-
-cron.schedule("* * * * *", sendTrajets);
