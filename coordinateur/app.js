@@ -1,18 +1,9 @@
+"use strict";
+
+const jsonStringSave = require("./jsonStringSave");
+const WebSocket = require("ws");
 const cron = require("node-cron");
-const express = require("express");
 const request = require("request");
-const bodyParser = require("body-parser");
-
-const app = express();
-
-const PORT = 5000;
-
-// Paramètres pour le moteur de templates
-app.set("views", "./views");
-app.set("view engine", "pug");
-
-// Insertion du middleware body-parser
-app.use(bodyParser.urlencoded({ extended: true }));
 
 // Variables de connection et de trajets
 let keys;
@@ -94,13 +85,30 @@ const getTrajets = () => {
       }
     });
   }
+  console.log(trajets);
+  jsonStringSave.set(trajets);
 };
 // Exécution de la fonction toute les minutes
 cron.schedule("* * * * *", getTrajets);
 
-// Route principale (localhost:5000)
-app.get("/", function(req, res) {
-  res.render("index", { connected: connected, trajets: trajets });
+const wss = new WebSocket.Server({
+  port: 8080
 });
 
-app.listen(PORT, console.log(`Serveur démarré sur le port ${PORT}`));
+wss.on("connection", function connection(ws) {
+  // un algorithme d'optimisation se connecte, ce code est exécuté
+
+  // cette fonction effectue une action quand un algorithme d'optimisation envoie un message vers ce serveur
+  ws.on("message", function incoming(message) {
+    console.log("received: %s", message);
+  });
+
+  // cette fonction envoie un message vers l'algorithme qui s'est connecté
+  ws.send("something");
+});
+
+function sendTrajets() {
+  //optiAlgoWebSocket1.send(jsonStringSave.get());
+}
+
+cron.schedule("* * * * *", sendTrajets);
