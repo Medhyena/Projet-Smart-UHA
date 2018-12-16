@@ -107,6 +107,7 @@ const wss = new WebSocket.Server({
   server: server
 });
 
+// A remplacer par la vraie variable
 var points_et_colis_test = [ [ [1, 1], [2, 1] ], [ [3, 2] ] ];
 
 wss.on('connection', function connection(ws) {
@@ -125,7 +126,3 @@ server.on('request', app);
 
 // Le serveur écoute sur le port 10010
 server.listen(10010);
-
-function sendTrajets() {
-  //optiAlgoWebSocket1.send(jsonStringSave.get());
-}
