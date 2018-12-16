@@ -1,40 +1,37 @@
-var points_et_colis:number[][][];
 declare function require(name:string);
-var wslibrary = require('ws');
+const wslibrary = require('ws');
 
-    function optimisationNaive(vehicule_id:boolean[]): number[][][][] {
-        let vehicule_et_points_et_colis:number[][][][] = new Array(4); // nombre de véhicules
-        let i:number;
-        for (i = 0; vehicule_id[i] != true; i++);
-        console.log(points_et_colis);
-        vehicule_et_points_et_colis[i] = points_et_colis.slice();
-        vehicule_id[i] = false;
-        console.log(vehicule_et_points_et_colis);
-        return vehicule_et_points_et_colis;
-    }
+var points_et_colis:number[][][];
 
-    function connexionServeurWebSocket(ip_du_serveur:String, port_du_serveur:String)
-    {
-        let ws = new wslibrary('ws://' + ip_du_serveur + ':' + port_du_serveur + '/');
-        console.log('ws://' + ip_du_serveur + ':' + port_du_serveur + '/');
-        ws.on('open', function open() {
-            console.log("Succesfully connected!");
-        });
+// Fonction d'optimisation naïve
+function optimisationNaive(vehicule_id:boolean[]): number[][][][] {
+    let vehicule_et_points_et_colis:number[][][][] = new Array(4); // nombre de véhicules
+    let i:number;
+    for (i = 0; vehicule_id[i] != true; i++);
+    console.log(points_et_colis);
+    vehicule_et_points_et_colis[i] = points_et_colis.slice();
+    vehicule_id[i] = false;
+    console.log(vehicule_et_points_et_colis);
+    return vehicule_et_points_et_colis;
+}
 
-        ws.on('message', function incoming(data) {
-            console.log(data);
-            points_et_colis = data;
-            let vehicule_id:boolean[] = [false, true, true, false]; // véhicule disponible = true, non disponible = false
-            ws.send(JSON.stringify(optimisationNaive(vehicule_id)));
-        });
-    }
+// Fonction préparant la connexion WebSocket
+function connexionServeurWebSocket(ip_du_serveur:String, port_du_serveur:String)
+{
+    let ws = new wslibrary('ws://' + ip_du_serveur + ':' + port_du_serveur + '/');
+    console.log('ws://' + ip_du_serveur + ':' + port_du_serveur + '/');
+    ws.on('open', function open() {
+        console.log("Succesfully connected!");
+    });
 
-        
-var points_et_colis_test:number[][][] = [ [ [1, 1], [2, 1] ], [ [3, 2] ] ]; // chaque point de trajet a des colis à retirer avec leur points de trajets à déposer,
-// ici, les colis sont définis par des chiffres comme des identifiants, 
-// les points de trajets sont considérés comme sur une ligne de tram, donc dans un ordre plus ou moins logique par rapport aux distances (ici du plus bas au plus haut)
-let vehicule_et_points_et_colis:number[][][][];
-//vehicule_et_points_et_colis = this.optimisationNaive(vehicule_id);
+    // Fonction exécutée quand on reçoit un message
+    ws.on('message', function incoming(data) {
+        console.log(data);
+        points_et_colis = data;
+        let vehicule_id:boolean[] = [false, true, true, false]; // véhicule disponible = true, non disponible = false
+        ws.send(JSON.stringify(optimisationNaive(vehicule_id)));
+    });
+}
 
 // Il faut mettre l'IP du serveur ici
 var ip_du_serveur = "localhost";

@@ -1,14 +1,13 @@
 'use strict';
 
 // Dépendances du projet
-var app = require('express')();
-var WebSocket = require('ws');
-var server = require('http').createServer();
-var jsonStringSave = require('./jsonStringSave');
-
+const app = require('express')();
+const WebSocket = require('ws');
+const server = require('http').createServer();
 const cron = require("node-cron");
 const request = require("request");
 const bodyParser = require("body-parser");
+const jsonStringSave = require('./jsonStringSave');
 
 // Paramètres pour le moteur de templates
 app.set("views", "./views");
@@ -103,26 +102,43 @@ const getTrajets = () => {
 // Exécution de la fonction toute les minutes
 cron.schedule("* * * * *", getTrajets);
 
+// Création du serveur WebSocket
 const wss = new WebSocket.Server({ 
   server: server
 });
 
 // A remplacer par la vraie variable
 var points_et_colis_test = [ [ [1, 1], [2, 1] ], [ [3, 2] ] ];
+var tableau_de_connexions = [];
 
 wss.on('connection', function connection(ws) {
-  // un algorithme d'optimisation se connecte, ce code est exécuté
+  // Un algorithme d'optimisation se connecte, ce code est exécuté
 
-  // cette fonction effectue une action quand un algorithme d'optimisation envoie un message vers ce serveur
+  // Fonction qui effectue une action quand un algorithme d'optimisation envoie un message vers ce serveur
   ws.on('message', function incoming(message) {
+    // Code à modifier pour renvoyer vers les véhicules
     console.log('received: ' + message);
   });
 
-  // cette fonction envoie un message vers l'algorithme qui s'est connecté
-  cron.schedule("* * * * *", ws.send(JSON.stringify(points_et_colis_test)));
+  // On stocke la fonction d'envoi dans un tableau pour choisir à quel algorithme on envoie le trajet à optimiser
+  var send;
+  function send() {
+    ws.send(JSON.stringify(points_et_colis_test));
+  }
+  send.bind(send);
+  tableau_de_connexions.push(send);
 });
 
-server.on('request', app);
+// Fonction permettant d'envoyer les trajets aux algos (à modifier pour pouvoir choisir quels algos)
+function send_to_algo() {
+  if (tableau_de_connexions != undefined) {
+    tableau_de_connexions[0]();
+  }
+}
+
+// Envoie régulier aux algos choisis
+cron.schedule("* * * * *", send_to_algo);
 
 // Le serveur écoute sur le port 10010
+server.on('request', app);
 server.listen(10010);
