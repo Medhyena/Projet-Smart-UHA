@@ -1,27 +1,33 @@
-var Optimisation = /** @class */ (function () {
-    function Optimisation() {
-    }
-    Optimisation.optimisation_naive = function (points_et_colis, vehicule_id) {
-        var vehicule_et_points_et_colis = new Array(4); // nombre de véhicules
-        var i;
-        for (i = 0; vehicule_id[i] != true; i++)
-            ;
-        console.log(points_et_colis);
-        vehicule_et_points_et_colis[i] = points_et_colis.slice();
-        vehicule_id[i] = false;
-        return vehicule_et_points_et_colis;
-    };
-    Optimisation.main = function () {
-        var points_et_colis = [[[1, 1], [2, 1]], [[3, 2]]]; // chaque point de trajet a des colis à retirer avec leur points de trajets à déposer,
-        // ici, les colis sont définis par des chiffres comme des identifiants, 
-        // les points de trajets sont considérés comme sur une ligne de tram, donc dans un ordre plus ou moins logique par rapport aux distances (ici du plus bas au plus haut)
-        var vehicule_id = [false, true, true, false]; // véhicule disponible = true, non disponible = false
-        var vehicule_et_points_et_colis;
-        vehicule_et_points_et_colis = this.optimisation_naive(points_et_colis, vehicule_id);
-        console.log(vehicule_et_points_et_colis);
-        console.log(vehicule_et_points_et_colis[1]);
-        return 0;
-    };
-    return Optimisation;
-}());
-Optimisation.main();
+var wslibrary = require("ws");
+var points_et_colis;
+// Fonction d'optimisation naïve
+function optimisationNaive(vehicule_id) {
+  var vehicule_et_points_et_colis = new Array(4); // nombre de véhicules
+  var i;
+  for (i = 0; vehicule_id[i] != true; i++);
+  console.log(points_et_colis);
+  vehicule_et_points_et_colis[i] = points_et_colis.slice();
+  vehicule_id[i] = false;
+  console.log(vehicule_et_points_et_colis);
+  return vehicule_et_points_et_colis;
+}
+// Fonction préparant la connexion WebSocket
+function connexionServeurWebSocket(ip_du_serveur, port_du_serveur) {
+  var ws = new wslibrary("ws://" + ip_du_serveur + ":" + port_du_serveur + "/");
+  console.log("ws://" + ip_du_serveur + ":" + port_du_serveur + "/");
+  ws.on("open", function open() {
+    console.log("Succesfully connected!");
+  });
+  // Fonction exécutée quand on reçoit un message
+  ws.on("message", function incoming(data) {
+    console.log(data);
+    points_et_colis = data;
+    var vehicule_id = [false, true, true, false]; // véhicule disponible = true, non disponible = false
+    ws.send(JSON.stringify(optimisationNaive(vehicule_id)));
+  });
+}
+// Il faut mettre l'IP du serveur ici
+var ip_du_serveur = "localhost";
+// Il faut mettre le port sur lequel écoute le serveur ici
+var port_du_serveur = "10010";
+connexionServeurWebSocket(ip_du_serveur, port_du_serveur);

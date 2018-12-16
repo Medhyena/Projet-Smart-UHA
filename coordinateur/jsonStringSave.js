@@ -1,6 +1,5 @@
-var jsonStringAllInfos;
-
-var adresse_batiments = new Map();
+let jsonStringAllInfos;
+let adresse_batiments = new Map();
 
 adresse_batiments.set("1 Rue Alfred Werner", 0);
 adresse_batiments.set("15 Rue des Frères Lumière", 1);
@@ -16,17 +15,24 @@ adresse_batiments.set("12 Rue des Frères Lumière", 10);
 adresse_batiments.set("15 Rue Jean Starcky", 11);
 adresse_batiments.set("18 Rue des Frères Lumière", 12);
 
-function parseJSONintoArray() {
-    
+function parseJSONintoArray(json) {
+  let id = 0;
+  let tab = [];
+  let parsed = JSON.parse(json);
+  parsed.forEach(trajet => {
+    tab.push([id, adresse_batiments.get(trajet.road.destination.gps_address)]);
+    id++;
+  });
+  return tab;
 }
 
 module.exports = {
-    set: function (test) {
-        jsonStringAllInfos = test;
-        parseJSONintoArray();
-        return;
-    },
-    get: function () {
-        return jsonStringAllInfos;
-    }
+  set: function(json) {
+    jsonStringAllInfos = parseJSONintoArray(json);
+    console.log(jsonStringAllInfos);
+    return;
+  },
+  get: function() {
+    return jsonStringAllInfos;
+  }
 };
