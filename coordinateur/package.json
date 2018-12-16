@@ -1,0 +1,20 @@
+{
+  "name": "coordinateur",
+  "version": "1.0.0",
+  "description": "Serveur qui fait le lien entre l'API REST, les algorithmes d'optimisations et les voitures.",
+  "main": "app.js",
+  "scripts": {
+    "start": "node app",
+    "dev": "nodemon app"
+  },
+  "author": "Daniel Wettel",
+  "license": "ISC",
+  "dependencies": {
+    "node-cron": "^2.0.3",
+    "request": "^2.88.0",
+    "ws": "^6.1.2"
+  },
+  "devDependencies": {
+    "nodemon": "^1.18.8"
+  }
+}
