@@ -1,0 +1,14 @@
+{
+  "name": "optimisation",
+  "version": "1.0.0",
+  "description": "Exemple d'algorithme d'optimisation des trajets (naïf)",
+  "main": "OptiAlgo.js",
+  "scripts": {
+    "start": "node OptiAlgo"
+  },
+  "author": "Laurent Galassi",
+  "license": "ISC",
+  "dependencies": {
+    "ws": "^6.1.2"
+  }
+}
