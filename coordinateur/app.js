@@ -1,6 +1,6 @@
 "use strict";
 
-// Variable à modifier selon quel algorithme veut être utilisé
+// Variable à modifier selon quel algorithme veut être utilisé, pour l'instant, elle prend le premier qui se connecte
 var id_algorithme = 0;
 
 // Dépendances du projet
@@ -122,22 +122,23 @@ wss.on("connection", function connection(ws) {
   });
 
   // On stocke la fonction d'envoi dans un tableau pour choisir à quel algorithme on envoie le trajet à optimiser
-  let send = () => {
-    ws.send(JSON.stringify(jsonStringSave.get()));
-  };
-  tableau_de_connexions.push(send);
+  
+  tableau_de_connexions.push(() => {
+    ws.send(JSON.stringify(jsonStringSave.get()))
+  });
 });
 
 // Fonction permettant d'envoyer les trajets aux algos (à modifier pour pouvoir choisir quels algos)
-function send_to_algo(id_algorithme_a_utiliser) {
-  if (tableau_de_connexions[id_algorithme_a_utiliser] !== undefined) {
-    tableau_de_connexions[id_algorithme_a_utiliser]();
+function send_to_algo() {
+  if (tableau_de_connexions[id_algorithme] !== undefined) {
+    tableau_de_connexions[id_algorithme]();
   }
 }
 
 // Envoie régulier aux algos choisis
-cron.schedule("* * * * *", send_to_algo(id_algorithme));
+cron.schedule("* * * * *", send_to_algo);
 
 // Le serveur écoute sur le port 10010
 server.on("request", app);
 server.listen(10010);
+ 

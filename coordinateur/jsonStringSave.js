@@ -15,6 +15,7 @@ adresse_batiments.set("12 Rue des Frères Lumière", 10);
 adresse_batiments.set("15 Rue Jean Starcky", 11);
 adresse_batiments.set("18 Rue des Frères Lumière", 12);
 
+// Trie les informations venant d'oxycar pour en faire un tableau
 function parseJSONintoArray(json) {
   let id = 0;
   let tab = [[], [], [], [], [], [], [], [], [], [], [], [], []];
@@ -34,6 +35,7 @@ module.exports = {
     jsonStringAllInfos = parseJSONintoArray(json);
     return;
   },
+  // TODO une fonction pour récupérer et ajouter les données des véhicules dans le tableau (pour l'algorithme d'opitmisation)
   get: function() {
     return jsonStringAllInfos;
   }
