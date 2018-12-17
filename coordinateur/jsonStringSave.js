@@ -17,10 +17,13 @@ adresse_batiments.set("18 Rue des Frères Lumière", 12);
 
 function parseJSONintoArray(json) {
   let id = 0;
-  let tab = [];
+  let tab = [[], [], [], [], [], [], [], [], [], [], [], [], []];
   let parsed = JSON.parse(json);
   parsed.forEach(trajet => {
-    tab.push([id, adresse_batiments.get(trajet.road.destination.gps_address)]);
+    tab[adresse_batiments.get(trajet.road.origin.gps_address)].push([
+      id,
+      adresse_batiments.get(trajet.road.destination.gps_address)
+    ]);
     id++;
   });
   return tab;
