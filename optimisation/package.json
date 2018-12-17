@@ -6,6 +6,7 @@
   "author": "Laurent Galassi",
   "license": "ISC",
   "dependencies": {
+    "typescript": "^3.2.2",
     "ws": "^6.1.2"
   }
 }
