@@ -120,17 +120,15 @@ wss.on("connection", function connection(ws) {
   });
 
   // On stocke la fonction d'envoi dans un tableau pour choisir à quel algorithme on envoie le trajet à optimiser
-  var send;
-  function send() {
+  let send = () => {
     ws.send(JSON.stringify(points_et_colis_test));
-  }
-  send.bind(send);
+  };
   tableau_de_connexions.push(send);
 });
 
 // Fonction permettant d'envoyer les trajets aux algos (à modifier pour pouvoir choisir quels algos)
 function send_to_algo() {
-  if (tableau_de_connexions != undefined) {
+  if (tableau_de_connexions[0] !== undefined) {
     tableau_de_connexions[0]();
   }
 }

@@ -32,7 +32,6 @@ function parseJSONintoArray(json) {
 module.exports = {
   set: function(json) {
     jsonStringAllInfos = parseJSONintoArray(json);
-    console.log(jsonStringAllInfos);
     return;
   },
   get: function() {
