@@ -1,0 +1,11 @@
+{
+  "name": "optimisation",
+  "version": "1.0.0",
+  "description": "Programme d'optimisation naïf",
+  "main": "OptiAlgo.js",
+  "author": "Laurent Galassi",
+  "license": "ISC",
+  "dependencies": {
+    "ws": "^6.1.2"
+  }
+}
