@@ -1,7 +1,10 @@
 "use strict";
 
-const jsonStringSave = require("./jsonStringSave");
+// Variable à modifier selon quel algorithme veut être utilisé
+var id_algorithme = 0;
 
+// Dépendances du projet
+const jsonStringSave = require("./jsonStringSave");
 const app = require("express")();
 const bodyParser = require("body-parser");
 const cron = require("node-cron");
@@ -107,7 +110,6 @@ const wss = new WebSocket.Server({
 });
 
 // A remplacer par la vraie variable
-var points_et_colis_test = [[[1, 1], [2, 1]], [[3, 2]]];
 var tableau_de_connexions = [];
 
 wss.on("connection", function connection(ws) {
@@ -121,20 +123,20 @@ wss.on("connection", function connection(ws) {
 
   // On stocke la fonction d'envoi dans un tableau pour choisir à quel algorithme on envoie le trajet à optimiser
   let send = () => {
-    ws.send(JSON.stringify(points_et_colis_test));
+    ws.send(JSON.stringify(jsonStringSave.get()));
   };
   tableau_de_connexions.push(send);
 });
 
 // Fonction permettant d'envoyer les trajets aux algos (à modifier pour pouvoir choisir quels algos)
-function send_to_algo() {
-  if (tableau_de_connexions[0] !== undefined) {
-    tableau_de_connexions[0]();
+function send_to_algo(id_algorithme_a_utiliser) {
+  if (tableau_de_connexions[id_algorithme_a_utiliser] !== undefined) {
+    tableau_de_connexions[id_algorithme_a_utiliser]();
   }
 }
 
 // Envoie régulier aux algos choisis
-cron.schedule("* * * * *", send_to_algo);
+cron.schedule("* * * * *", send_to_algo(id_algorithme));
 
 // Le serveur écoute sur le port 10010
 server.on("request", app);
