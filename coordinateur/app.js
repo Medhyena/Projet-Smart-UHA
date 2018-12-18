@@ -2,6 +2,8 @@
 
 // Variable à modifier selon quel algorithme veut être utilisé, pour l'instant, elle prend le premier qui se connecte
 var id_algorithme = 0;
+// Variable permettant de vérifier que les trajets ont changé
+var old_json_string;
 
 // Dépendances du projet
 const jsonStringSave = require("./jsonStringSave");
@@ -76,7 +78,7 @@ const getTrajets = () => {
     const options = {
       url: `http://localhost:8095/events/${
         keys.customer.customer.cust_uuid
-      }/calendar`,
+        }/calendar`,
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -109,7 +111,7 @@ const wss = new WebSocket.Server({
   server: server
 });
 
-// A remplacer par la vraie variable
+// Tableau des algorithmes qui se sont connectés
 var tableau_de_connexions = [];
 
 wss.on("connection", function connection(ws) {
@@ -117,12 +119,12 @@ wss.on("connection", function connection(ws) {
 
   // Fonction qui effectue une action quand un algorithme d'optimisation envoie un message vers ce serveur
   ws.on("message", function incoming(message) {
+
     // Code à modifier pour renvoyer vers les véhicules
     console.log("received: " + message);
   });
 
   // On stocke la fonction d'envoi dans un tableau pour choisir à quel algorithme on envoie le trajet à optimiser
-  
   tableau_de_connexions.push(() => {
     ws.send(JSON.stringify(jsonStringSave.get()))
   });
@@ -130,8 +132,19 @@ wss.on("connection", function connection(ws) {
 
 // Fonction permettant d'envoyer les trajets aux algos (à modifier pour pouvoir choisir quels algos)
 function send_to_algo() {
-  if (tableau_de_connexions[id_algorithme] !== undefined) {
-    tableau_de_connexions[id_algorithme]();
+
+  // Vérification d'un trajet en doublon
+  if (old_json_string == undefined || old_json_string != jsonStringSave.get()) {
+
+    // Vérification de l'existence de l'algorithme dans le tableau des algorithmes
+    if (tableau_de_connexions[id_algorithme] !== undefined) {
+
+      // Copie des données pour la prochaine vérification du doublon
+      old_json_string = jsonStringSave.get();
+
+      // Envoi des données vers l'algorithme d'optimisation choisi
+      tableau_de_connexions[id_algorithme]();
+    }
   }
 }
 
@@ -141,4 +154,3 @@ cron.schedule("* * * * *", send_to_algo);
 // Le serveur écoute sur le port 10010
 server.on("request", app);
 server.listen(10010);
- 
