@@ -103,7 +103,8 @@ const getTrajets = () => {
     });
   }
 };
-// Exécution de la fonction toute les minutes
+
+// Exécution de la fonction toutes les minutes
 cron.schedule("* * * * *", getTrajets);
 
 // Création du serveur WebSocket
