@@ -164,7 +164,7 @@ function send_to_algo() {
   }
 }
 
-// Envoie régulier aux algos choisis
+// Envoie régulier toutes les minutes aux algos choisis
 cron.schedule("* * * * *", send_to_algo);
 
 // Route servant à visualiser l'état des données

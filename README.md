@@ -6,7 +6,14 @@ git clone https://gitlab.com/smart-uha/smart-api.git
 cd smart-api
 npm install -g swagger
 npm install -g typescript
-npm install --only=dev
+npm install
+npm install -D
+
+cp config/config.default.json config/config.json
+
+SI PROBLEME avec lodash :
+npm install event-stream@3.3.5
+npm install lodash
 
 Pour lancer l'API:
 npm run watch
