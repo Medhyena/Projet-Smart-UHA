@@ -16,6 +16,9 @@ html
           h1(class="display-4") Smart-UHA
           if connected
             p(class="lead text-success") Vous êtes connecté
-            div.container= trajets
           else
             p(class="lead text-danger") Vous n'êtes pas connecté
+      ul
+        each voiture in trajets
+          each colis in voiture
+            li= colis

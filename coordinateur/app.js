@@ -78,7 +78,7 @@ const getTrajets = () => {
     const options = {
       url: `http://localhost:8095/events/${
         keys.customer.customer.cust_uuid
-        }/calendar`,
+      }/calendar`,
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -94,12 +94,28 @@ const getTrajets = () => {
       } else {
         if (response.statusCode === 200) {
           trajets = response.body;
+          // code utilisé pour créer le bouchon
+          /*
+          require("fs").writeFile(
+            "bouchon.txt",
+            JSON.stringify(trajets),
+            err => {
+              if (err) throw err;
+              console.log("The file has been saved!");
+            }
+          );*/
           jsonStringSave.set(trajets);
         } else {
           console.log(response.statusCode);
           trajets = null;
         }
       }
+    });
+  } else {
+    console.log("Non connecté, utilisation du bouchon.");
+    require("fs").readFile("bouchon.txt", (err, data) => {
+      if (err) throw err;
+      jsonStringSave.set(JSON.parse(data));
     });
   }
 };
@@ -113,33 +129,32 @@ const wss = new WebSocket.Server({
 });
 
 // Tableau des algorithmes qui se sont connectés
-var tableau_de_connexions = [];
+let tableau_de_connexions = [];
+// Tableau des trajets pour chaque voiture
+let tableau_de_voitures;
 
 wss.on("connection", function connection(ws) {
   // Un algorithme d'optimisation se connecte, ce code est exécuté
 
   // Fonction qui effectue une action quand un algorithme d'optimisation envoie un message vers ce serveur
   ws.on("message", function incoming(message) {
-
     // Code à modifier pour renvoyer vers les véhicules
     console.log("received: " + message);
+    tableau_de_voitures = JSON.parse(message);
   });
 
   // On stocke la fonction d'envoi dans un tableau pour choisir à quel algorithme on envoie le trajet à optimiser
   tableau_de_connexions.push(() => {
-    ws.send(JSON.stringify(jsonStringSave.get()))
+    ws.send(JSON.stringify(jsonStringSave.get()));
   });
 });
 
 // Fonction permettant d'envoyer les trajets aux algos (à modifier pour pouvoir choisir quels algos)
 function send_to_algo() {
-
   // Vérification d'un trajet en doublon
   if (old_json_string == undefined || old_json_string != jsonStringSave.get()) {
-
     // Vérification de l'existence de l'algorithme dans le tableau des algorithmes
     if (tableau_de_connexions[id_algorithme] !== undefined) {
-
       // Copie des données pour la prochaine vérification du doublon
       old_json_string = jsonStringSave.get();
 
@@ -151,6 +166,14 @@ function send_to_algo() {
 
 // Envoie régulier aux algos choisis
 cron.schedule("* * * * *", send_to_algo);
+
+// Route servant à visualiser l'état des données
+app.get("/", function(req, res) {
+  res.render("index", {
+    connected: connected,
+    trajets: jsonStringSave.vuetify(tableau_de_voitures)
+  });
+});
 
 // Le serveur écoute sur le port 10010
 server.on("request", app);
