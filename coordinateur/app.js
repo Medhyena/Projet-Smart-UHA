@@ -149,7 +149,7 @@ function send_to_algo() {
   }
 }
 
-// Envoie régulier aux algos choisis
+// Envoie régulier toutes les minutes aux algos choisis
 cron.schedule("* * * * *", send_to_algo);
 
 // Le serveur écoute sur le port 10010
