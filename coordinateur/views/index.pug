@@ -18,7 +18,12 @@ html
             p(class="lead text-success") Vous êtes connecté
           else
             p(class="lead text-danger") Vous n'êtes pas connecté
-      ul
+      ul(class="list-group")
         each voiture in trajets
-          each colis in voiture
-            li= colis
+          each colis, index in voiture
+            case index
+              when 0
+                li(class="list-group-item")= colis
+              default
+                ul
+                  li= colis
